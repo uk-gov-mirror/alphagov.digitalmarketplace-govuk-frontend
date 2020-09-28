@@ -1,15 +1,16 @@
 function TaxonomySelect ($module) {
   this.$taxonomySelect = $module
-  this.$options = this.instantiateOptions
+  this.$options = this.instantiateOptions()
   this.$taxonomyContainer = this.$taxonomySelect.querySelector('.js-taxonomy-container')
 }
   
 TaxonomySelect.prototype.init = function () {
-  // Attach listener to update checked count
+  // Attach listener to update options
   this.$taxonomySelect.addEventListener('change', function (event) {
     var $changedEl = event.target
-    if ($changedEl.tagName === 'INPUT' && $changedEl.type === 'checkbox') {
-      this.updateCheckedCount()
+    console.log($changedEl)
+    if ($changedEl.tagName === 'SELECT') {
+      this.update()
     }
   }.bind(this))
 
@@ -25,6 +26,83 @@ TaxonomySelect.prototype.init = function () {
     this.close()
   } else {
     this.open()
+  }
+
+  this.update()
+}
+
+TaxonomySelect.prototype.update = function updateTaxonomyFacet () {
+  this.disableLevel2Taxon()
+  this.disableLevel3Taxon()
+  this.resetLevel2TaxonValue()
+  this.resetLevel3TaxonValue()
+  this.showRelevantLevel2Taxons()
+  this.showRelevantLevel3Taxons()
+}
+
+TaxonomySelect.prototype.disableLevel2Taxon = function disableLevel2Taxon () {
+  var level1TaxonSelected = !!this.$level1Taxon().value
+  this.$level2Taxon().disabled = !level1TaxonSelected
+}
+
+TaxonomySelect.prototype.disableLevel3Taxon = function disableLevel3Taxon () {
+  var level2TaxonSelected = !!this.$level2Taxon().value
+  this.$level3Taxon().disabled = !level2TaxonSelected
+}
+
+TaxonomySelect.prototype.resetLevel2TaxonValue = function resetLevel2TaxonValue () {
+  var selected = this.$level2Taxon().querySelector('option:checked')
+
+  var parentTaxon = this.$level1Taxon().value
+
+  var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
+
+  if (isOrphanedSubTaxon) {
+    this.$level2Taxon().value = ''
+  }
+}
+
+TaxonomySelect.prototype.resetLevel3TaxonValue = function resetLevel3TaxonValue () {
+  var selected = this.$level3Taxon().querySelector('option:checked')
+
+  var parentTaxon = this.$level2Taxon().value
+
+  var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
+
+  if (isOrphanedSubTaxon) {
+    this.$level3Taxon().value = ''
+  }
+}
+
+TaxonomySelect.prototype.showRelevantLevel2Taxons = function showRelevantLevel2Taxons () {
+  if (this.$level1Taxon().value !== '') {
+    var taxons = this.$options[this.$level1Taxon().value]
+  
+    var subtaxon = this.$level2Taxon()
+  
+    subtaxon.querySelectorAll('option').forEach(function (option) {
+      if (option.value) { option.remove() }
+    }, this)
+
+    taxons.forEach(function (option) {
+      subtaxon.appendChild(option)
+    }, this)
+  }
+}
+
+TaxonomySelect.prototype.showRelevantLevel3Taxons = function showRelevantLevel3Taxons () {
+  if (this.$level2Taxon().value !== '') {
+    var taxons = this.$options[this.$level2Taxon().value]
+  
+    var subtaxon = this.$level3Taxon()
+  
+    subtaxon.querySelectorAll('option').forEach(function (option) {
+      if (option.value) { option.remove() }
+    }, this)
+
+    taxons.forEach(function (option) {
+      subtaxon.appendChild(option)
+    }, this)
   }
 }
 
@@ -43,14 +121,27 @@ TaxonomySelect.prototype.$level3Taxon = function $level3Taxon () {
 TaxonomySelect.prototype.instantiateOptions = function instantiateOptions () {
   var options = {}
 
-  this.allOptions = this.$taxonomySelect.querySelectorAll('option')
+  this.level2Options = this.$level2Taxon().querySelectorAll('option[value]')
+  this.level3Options = this.$level3Taxon().querySelectorAll('option[value]')
 
-  this.allOptions.forEach(function (option) {
+  this.level2Options.forEach(function (option) {
     var parent = option.dataset.parent
 
-    options[parent] = options[parent] || []
-    options[parent].push(option)
+    if (parent) {
+      options[parent] = options[parent] || []
+      options[parent].push(option)
+    }
   })
+  
+  this.level3Options.forEach(function (option) {
+    var parent = option.dataset.parent
+
+    if (parent) {
+      options[parent] = options[parent] || []
+      options[parent].push(option)
+    }
+  })
+  console.log(options)
 
   return options
 }

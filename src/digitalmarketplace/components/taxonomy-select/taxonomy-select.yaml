@@ -39,33 +39,59 @@ examples:
       name: "level_1"
       label: "Level 1"
       items:
+        - text: 'All options'
+          value: ''
         - text: 'Option 1'
-          value: '1'
+          value: '1.1'
         - text: 'Option 2'
-          value: '2'
-        - text: 'Option 3'
-          value: '3'
-        - text: 'Option 4'
-          value: '4'
-        - text: 'Option 5'
-          value: '5'
+          value: '1.2'
     level_2_items: 
       id: "level_2"
       name: "level_2"
       label: "Level 2"
       items:
+        - text: 'All options'
+          value: ''
         - text: 'Option 1'
-          value: '1'
+          value: '2.1'
+          attributes:
+            data-parent: '1.1'
         - text: 'Option 2'
-          value: '2'
+          value: '2.2'
+          attributes:
+            data-parent: '1.2'
+        - text: 'Option 3'
+          value: '2.3'
+          attributes:
+            data-parent: '1.2'
+        - text: 'Option 4'
+          value: '2.4'
+          attributes:
+            data-parent: '1.1'
     level_3_items: 
       id: "level_3"
       name: "level_3"
       label: "Level 3"
       items:
+        - text: 'All options'
+          value: ''
         - text: 'Option 1'
-          value: '1'
+          value: '3.1'
+          attributes:
+            data-parent: '2.1'
         - text: 'Option 2'
-          value: '2'
+          value: '3.2'
+          attributes:
+            data-parent: '2.2'
         - text: 'Option 3'
-          value: '3'
+          value: '3.3'
+          attributes:
+            data-parent: '2.3'
+        - text: 'Option 4'
+          value: '3.4'
+          attributes:
+            data-parent: '2.4'
+        - text: 'Option 5'
+          value: '3.5'
+          attributes:
+            data-parent: '2.3'

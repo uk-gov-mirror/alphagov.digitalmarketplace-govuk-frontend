@@ -20,21 +20,21 @@
       {{ govukSelect({
         "id": "level_one_taxon",
         "name": params.level_1_items.name,
-        "label": params.level_1_items.label,
+        "label": { "text": params.level_1_items.label },
         "items": params.level_1_items.items
       })}}
       <div class="js-taxonomy-select">
         {{ govukSelect({
           "id": "level_two_taxon",
           "name": params.level_2_items.name,
-          "label": params.level_2_items.label,
+          "label": { "text": params.level_2_items.label },
           "items": params.level_2_items.items
         })}}
         <div class="js-taxonomy-select">
           {{ govukSelect({
             "id": "level_three_taxon",
             "name": params.level_3_items.name,
-            "label": params.level_3_items.label,
+            "label": { "text": params.level_3_items.label },
             "items": params.level_3_items.items
           })}}
         </div>
