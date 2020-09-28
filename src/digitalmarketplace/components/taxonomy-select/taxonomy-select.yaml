@@ -1,0 +1,71 @@
+params:
+- name: title
+  type: string
+  required: true
+  description: The title of the taxonomy select group
+- name: name
+  type: string
+  required: true
+  description: The name of the taxonomy select group
+- name: taxonomy_container_id
+  type: string
+  required: true
+  description: The ID of the container for the select components
+- name: level_1_items
+  type: array
+  required: true
+  description: The select items for the first select
+- name: level_2_items
+  type: array
+  required: true
+  description: The select items for the second select
+- name: level_3_items
+  type: array
+  required: true
+  description: The select items for the third select
+- name: closed_on_load
+  type: boolean
+  description: Whether to collapse the filter by default
+
+examples:
+- name: default
+  description: 'A basic taxonomy select'
+  data:
+    name: "default"
+    title: "Default"
+    taxonomy_container_id: 'default-taxonomy'
+    level_1_items:
+      id: "level_1"
+      name: "level_1"
+      label: "Level 1"
+      items:
+        - text: 'Option 1'
+          value: '1'
+        - text: 'Option 2'
+          value: '2'
+        - text: 'Option 3'
+          value: '3'
+        - text: 'Option 4'
+          value: '4'
+        - text: 'Option 5'
+          value: '5'
+    level_2_items: 
+      id: "level_2"
+      name: "level_2"
+      label: "Level 2"
+      items:
+        - text: 'Option 1'
+          value: '1'
+        - text: 'Option 2'
+          value: '2'
+    level_3_items: 
+      id: "level_3"
+      name: "level_3"
+      label: "Level 3"
+      items:
+        - text: 'Option 1'
+          value: '1'
+        - text: 'Option 2'
+          value: '2'
+        - text: 'Option 3'
+          value: '3'
