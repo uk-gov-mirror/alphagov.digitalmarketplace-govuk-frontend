@@ -18,21 +18,21 @@
   <div role="group" aria-labelledby="{{ title_id }}" class="dm-taxonomy-select__container js-taxonomy-container" id="{{ params.taxonomy_container_id }}" tabindex="-1">
     <div class="js-taxonomy-select">
       {{ govukSelect({
-        "id": "level_one_taxon",
+        "id": "level_1_taxon",
         "name": params.level_1_items.name,
         "label": { "text": params.level_1_items.label },
         "items": params.level_1_items.items
       })}}
       <div class="js-taxonomy-select">
         {{ govukSelect({
-          "id": "level_two_taxon",
+          "id": "level_2_taxon",
           "name": params.level_2_items.name,
           "label": { "text": params.level_2_items.label },
           "items": params.level_2_items.items
         })}}
         <div class="js-taxonomy-select">
           {{ govukSelect({
-            "id": "level_three_taxon",
+            "id": "level_3_taxon",
             "name": params.level_3_items.name,
             "label": { "text": params.level_3_items.label },
             "items": params.level_3_items.items

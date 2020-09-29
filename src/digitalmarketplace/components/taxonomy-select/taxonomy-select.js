@@ -1,14 +1,14 @@
 function TaxonomySelect ($module) {
   this.$taxonomySelect = $module
-  this.$options = this.instantiateOptions()
   this.$taxonomyContainer = this.$taxonomySelect.querySelector('.js-taxonomy-container')
+  this.taxonDepth = this.$taxonomySelect.querySelectorAll('.js-taxonomy-select').length
 }
   
 TaxonomySelect.prototype.init = function () {
+  this.$options = this.instantiateOptions()
   // Attach listener to update options
   this.$taxonomySelect.addEventListener('change', function (event) {
     var $changedEl = event.target
-    console.log($changedEl)
     if ($changedEl.tagName === 'SELECT') {
       this.update()
     }
@@ -31,120 +31,73 @@ TaxonomySelect.prototype.init = function () {
   this.update()
 }
 
+TaxonomySelect.prototype.$taxonAtLevel = function $taxonLevel (level) {
+  return this.$taxonomySelect.querySelector('#level_' + level + '_taxon')
+}
+
+TaxonomySelect.prototype.disableSubTaxons = function disableSubTaxons () {
+  for (var i = 1; i < this.taxonDepth; i++) {
+    var parentTaxonSelected = !!this.$taxonAtLevel(i).value
+    this.$taxonAtLevel(i + 1).disabled = !parentTaxonSelected
+  }
+}
+
+TaxonomySelect.prototype.resetSubTaxons = function resetSubTaxons () {
+  for (var i = 1; i < this.taxonDepth; i++) {
+    var selected = this.$taxonAtLevel(i + 1).querySelector('option:checked')
+  
+    var parentTaxon = this.$taxonAtLevel(i).value
+  
+    var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
+  
+    if (isOrphanedSubTaxon) {
+      this.$taxonAtLevel(i + 1).value = ''
+    }
+  }
+}
+
+TaxonomySelect.prototype.showRelevantSubTaxons = function showRelevantSubTaxons () {
+  for (var i = 1; i < this.taxonDepth; i++) {
+    if (this.$taxonAtLevel(i).value !== '') {
+      var taxons = this.$options[this.$taxonAtLevel(i).value]
+      var subtaxon = this.$taxonAtLevel(i + 1)
+  
+      subtaxon.querySelectorAll('option').forEach(function (option) {
+        if (option.value) { option.remove() }
+      }, this)
+  
+      taxons.forEach(function (option) {
+        subtaxon.appendChild(option)
+      }, this)
+    }
+  }
+}
+
 TaxonomySelect.prototype.update = function updateTaxonomyFacet () {
-  this.disableLevel2Taxon()
-  this.disableLevel3Taxon()
-  this.resetLevel2TaxonValue()
-  this.resetLevel3TaxonValue()
-  this.showRelevantLevel2Taxons()
-  this.showRelevantLevel3Taxons()
-}
-
-TaxonomySelect.prototype.disableLevel2Taxon = function disableLevel2Taxon () {
-  var level1TaxonSelected = !!this.$level1Taxon().value
-  this.$level2Taxon().disabled = !level1TaxonSelected
-}
-
-TaxonomySelect.prototype.disableLevel3Taxon = function disableLevel3Taxon () {
-  var level2TaxonSelected = !!this.$level2Taxon().value
-  this.$level3Taxon().disabled = !level2TaxonSelected
-}
-
-TaxonomySelect.prototype.resetLevel2TaxonValue = function resetLevel2TaxonValue () {
-  var selected = this.$level2Taxon().querySelector('option:checked')
-
-  var parentTaxon = this.$level1Taxon().value
-
-  var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
-
-  if (isOrphanedSubTaxon) {
-    this.$level2Taxon().value = ''
-  }
-}
-
-TaxonomySelect.prototype.resetLevel3TaxonValue = function resetLevel3TaxonValue () {
-  var selected = this.$level3Taxon().querySelector('option:checked')
-
-  var parentTaxon = this.$level2Taxon().value
-
-  var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
-
-  if (isOrphanedSubTaxon) {
-    this.$level3Taxon().value = ''
-  }
-}
-
-TaxonomySelect.prototype.showRelevantLevel2Taxons = function showRelevantLevel2Taxons () {
-  if (this.$level1Taxon().value !== '') {
-    var taxons = this.$options[this.$level1Taxon().value]
-  
-    var subtaxon = this.$level2Taxon()
-  
-    subtaxon.querySelectorAll('option').forEach(function (option) {
-      if (option.value) { option.remove() }
-    }, this)
-
-    taxons.forEach(function (option) {
-      subtaxon.appendChild(option)
-    }, this)
-  }
-}
-
-TaxonomySelect.prototype.showRelevantLevel3Taxons = function showRelevantLevel3Taxons () {
-  if (this.$level2Taxon().value !== '') {
-    var taxons = this.$options[this.$level2Taxon().value]
-  
-    var subtaxon = this.$level3Taxon()
-  
-    subtaxon.querySelectorAll('option').forEach(function (option) {
-      if (option.value) { option.remove() }
-    }, this)
-
-    taxons.forEach(function (option) {
-      subtaxon.appendChild(option)
-    }, this)
-  }
-}
-
-TaxonomySelect.prototype.$level1Taxon = function $level1Taxon () {
-  return this.$taxonomySelect.querySelector('#level_one_taxon')
-}
-
-TaxonomySelect.prototype.$level2Taxon = function $level2Taxon () {
-  return this.$taxonomySelect.querySelector('#level_two_taxon')
-}
-
-TaxonomySelect.prototype.$level3Taxon = function $level3Taxon () {
-  return this.$taxonomySelect.querySelector('#level_three_taxon')
+  this.disableSubTaxons()
+  this.resetSubTaxons()
+  this.showRelevantSubTaxons()
 }
 
 TaxonomySelect.prototype.instantiateOptions = function instantiateOptions () {
   var options = {}
 
-  this.level2Options = this.$level2Taxon().querySelectorAll('option[value]')
-  this.level3Options = this.$level3Taxon().querySelectorAll('option[value]')
-
-  this.level2Options.forEach(function (option) {
-    var parent = option.dataset.parent
-
-    if (parent) {
-      options[parent] = options[parent] || []
-      options[parent].push(option)
-    }
-  })
+  for (var i = 1; i <= this.taxonDepth; i++) {
+    this.subTaxonOptions = this.$taxonAtLevel(i).querySelectorAll('option[value]')
+    this.subTaxonOptions.forEach(function (option) {
+      var parent = option.dataset.parent
   
-  this.level3Options.forEach(function (option) {
-    var parent = option.dataset.parent
-
-    if (parent) {
-      options[parent] = options[parent] || []
-      options[parent].push(option)
-    }
-  })
-  console.log(options)
+      if (parent) {
+        options[parent] = options[parent] || []
+        options[parent].push(option)
+      }
+    })
+  }
 
   return options
 }
+
+/* Below this line are methods for handling the expander. These could be separated out if necessary. */
 
 TaxonomySelect.prototype.replaceHeadingSpanWithButton = function replaceHeadingSpanWithButton () {
   /* Replace the span within the heading with a button element. This is based on feedback from Léonie Watson.
