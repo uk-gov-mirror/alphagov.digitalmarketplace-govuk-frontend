@@ -37,7 +37,7 @@ TaxonomySelect.prototype.$taxonAtLevel = function $taxonLevel (level) {
 
 TaxonomySelect.prototype.disableSubTaxons = function disableSubTaxons () {
   for (var i = 1; i < this.taxonDepth; i++) {
-    var parentTaxonSelected = !!this.$taxonAtLevel(i).value
+    var parentTaxonSelected = !!this.$taxonAtLevel(i).value && !this.$taxonAtLevel(i).disabled
     this.$taxonAtLevel(i + 1).disabled = !parentTaxonSelected
   }
 }
