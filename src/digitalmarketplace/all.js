@@ -45,7 +45,7 @@ function initAll (options) {
   $SearchBox.forEach(function ($SearchBox) {
     new SearchBox($SearchBox).init()
   })
-  
+
   var $TaxonomySelect = scope.querySelectorAll('[data-module="dm-taxonomy-select"]')
   $TaxonomySelect.forEach(function ($TaxonomySelect) {
     new TaxonomySelect($TaxonomySelect).init()

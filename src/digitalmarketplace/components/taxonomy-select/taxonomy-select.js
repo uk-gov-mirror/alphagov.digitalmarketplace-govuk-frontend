@@ -3,7 +3,7 @@ function TaxonomySelect ($module) {
   this.$taxonomyContainer = this.$taxonomySelect.querySelector('.js-taxonomy-container')
   this.taxonDepth = this.$taxonomySelect.querySelectorAll('.js-taxonomy-select').length
 }
-  
+
 TaxonomySelect.prototype.init = function () {
   this.$options = this.instantiateOptions()
   // Attach listener to update options
@@ -45,11 +45,11 @@ TaxonomySelect.prototype.disableSubTaxons = function disableSubTaxons () {
 TaxonomySelect.prototype.resetSubTaxons = function resetSubTaxons () {
   for (var i = 1; i < this.taxonDepth; i++) {
     var selected = this.$taxonAtLevel(i + 1).querySelector('option:checked')
-  
+
     var parentTaxon = this.$taxonAtLevel(i).value
-  
+
     var isOrphanedSubTaxon = selected && selected.dataset.parent !== parentTaxon
-  
+
     if (isOrphanedSubTaxon) {
       this.$taxonAtLevel(i + 1).value = ''
     }
@@ -61,11 +61,11 @@ TaxonomySelect.prototype.showRelevantSubTaxons = function showRelevantSubTaxons 
     if (this.$taxonAtLevel(i).value !== '') {
       var taxons = this.$options[this.$taxonAtLevel(i).value]
       var subtaxon = this.$taxonAtLevel(i + 1)
-  
+
       subtaxon.querySelectorAll('option').forEach(function (option) {
         if (option.value) { option.remove() }
       }, this)
-  
+
       taxons.forEach(function (option) {
         subtaxon.appendChild(option)
       }, this)
@@ -86,7 +86,7 @@ TaxonomySelect.prototype.instantiateOptions = function instantiateOptions () {
     this.subTaxonOptions = this.$taxonAtLevel(i).querySelectorAll('option[value]')
     this.subTaxonOptions.forEach(function (option) {
       var parent = option.dataset.parent
-  
+
       if (parent) {
         options[parent] = options[parent] || []
         options[parent].push(option)
@@ -149,4 +149,3 @@ TaxonomySelect.prototype.isClosed = function isClosed () {
 }
 
 export default TaxonomySelect
-  
