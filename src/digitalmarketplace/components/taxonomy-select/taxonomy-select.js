@@ -3,11 +3,15 @@ function TaxonomySelect ($module) {
   this.$taxonomyContainer = this.$taxonomySelect.querySelector('.js-taxonomy-container')
   this.taxonDepth = this.$taxonomySelect.querySelectorAll('.js-taxonomy-select').length
   this.$options = this.instantiateOptions()
+}
+
+TaxonomySelect.prototype.init = function () {
   // Attach listener to update options
   this.$taxonomySelect.addEventListener('change', function (event) {
     var $changedEl = event.target
     if ($changedEl.tagName === 'SELECT') {
       this.update()
+      this.updateSelectedCount()
     }
   }.bind(this))
 
@@ -24,9 +28,12 @@ function TaxonomySelect ($module) {
   } else {
     this.open()
   }
-}
 
-TaxonomySelect.prototype.init = function () {
+  var selectedString = this.selectedString()
+  if (selectedString) {
+    this.attachSelectedCounter(selectedString)
+  }
+
   this.update()
 }
 
@@ -118,6 +125,45 @@ TaxonomySelect.prototype.replaceHeadingSpanWithButton = function replaceHeadingS
   $button.innerHTML = jsContainerHeadHTML
   $containerHead.insertAdjacentHTML('afterend', $button.outerHTML)
   $containerHead.remove()
+}
+
+TaxonomySelect.prototype.attachSelectedCounter = function attachSelectedCounter (selectedString) {
+  this.$taxonomySelect.querySelector('.js-container-button')
+    .insertAdjacentHTML('afterend', '<div class="dm-taxonomy-select__selected-counter js-selected-counter">' + selectedString + '</div>')
+}
+
+TaxonomySelect.prototype.updateSelectedCount = function updateSelectedCount () {
+  var selectedString = this.selectedString()
+  var selectedStringElement = this.$taxonomySelect.querySelector('.js-selected-counter')
+
+  if (selectedString) {
+    if (selectedStringElement) {
+      selectedStringElement.textContent = selectedString
+    } else {
+      this.attachSelectedCounter(selectedString)
+    }
+  } else {
+    selectedStringElement.remove()
+  }
+}
+
+TaxonomySelect.prototype.selectedString = function selectedString () {
+  this.getSelectedNumber()
+  var count = this.selectedCount
+  var selectedString = false
+  if (count > 0) {
+    selectedString = count + ' selected'
+  }
+
+  return selectedString
+}
+
+TaxonomySelect.prototype.getSelectedNumber = function getSelectedNumber () {
+  this.selectedCount = 0
+  for (var i = 1; i <= this.taxonDepth; i++) {
+    var selected = this.$taxonAtLevel(i).value != ''
+    if (selected) { this.selectedCount++ }
+  }
 }
 
 TaxonomySelect.prototype.toggleTaxonomySelect = function toggleTaxonomySelect (e) {
