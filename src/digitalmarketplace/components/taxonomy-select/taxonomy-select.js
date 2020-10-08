@@ -2,9 +2,6 @@ function TaxonomySelect ($module) {
   this.$taxonomySelect = $module
   this.$taxonomyContainer = this.$taxonomySelect.querySelector('.js-taxonomy-container')
   this.taxonDepth = this.$taxonomySelect.querySelectorAll('.js-taxonomy-select').length
-}
-
-TaxonomySelect.prototype.init = function () {
   this.$options = this.instantiateOptions()
   // Attach listener to update options
   this.$taxonomySelect.addEventListener('change', function (event) {
@@ -27,7 +24,9 @@ TaxonomySelect.prototype.init = function () {
   } else {
     this.open()
   }
+}
 
+TaxonomySelect.prototype.init = function () {
   this.update()
 }
 

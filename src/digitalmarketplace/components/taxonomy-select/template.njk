@@ -23,6 +23,7 @@
         "label": { "text": params.level_1_items.label },
         "items": params.level_1_items.items
       })}}
+      {% if params.level_2_items %}
       <div class="js-taxonomy-select">
         {{ govukSelect({
           "id": "level_2_taxon",
@@ -30,6 +31,7 @@
           "label": { "text": params.level_2_items.label },
           "items": params.level_2_items.items
         })}}
+        {% if params.level_3_items %}
         <div class="js-taxonomy-select">
           {{ govukSelect({
             "id": "level_3_taxon",
@@ -38,7 +40,9 @@
             "items": params.level_3_items.items
           })}}
         </div>
+        {% endif %}
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
