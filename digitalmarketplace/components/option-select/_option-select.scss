@@ -1,0 +1,12 @@
+.dm-option-select__selected-counter {
+  @include govuk-font($size: 14);
+  color: $govuk-text-colour;
+  margin-top: 3px;
+}
+    
+.js-enabled {
+  .dm-option-select__container {
+    height: 200px;
+  }
+}
+  
